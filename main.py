@@ -1,8 +1,19 @@
+import sys
+
 import praw
 import json
 import nltk
-import re
-from googlesearch import search
+import os
+
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from contextlib import redirect_stdout
+
+with redirect_stdout(open(os.devnull, 'w')):
+    nltk.download('punkt', quiet=True)
+    nltk.download('stopwords', quiet=True)
+    nltk.download('vader_lexicon', quiet=True)
 
 # The subreddit where comments are pulled from
 subreddit = "politics"
@@ -12,6 +23,9 @@ timeout = 60
 
 # Maximum number of comments pulled
 limit = 10
+
+# Debug mode
+debug = 0
 
 
 class CommentReader:
@@ -71,23 +85,55 @@ def extract(extractor):
 
 def analyse():
     print("Analysing...")
-    # Read the json file
+    # Read JSON file data
+    with open('CommentBodies', 'r') as input:
+        data = json.load(input)
+
+    words = ""
+    for c in data['comments']:
+        words = words + c
+
+    lower_words = words.lower()
 
     # Tokenize the data
-
+    tokenized_words = word_tokenize(lower_words, "english")
     # Normalize the data
+    # words = []
+    for word in tokenized_words:
+        if word not in stopwords.words('english'):
+            words = words + word
 
-    # Remove noise from the data
+    if debug:
+        print(words)
 
-    # Find word density
+    # Find word sentiment
+    sentiment = SentimentIntensityAnalyzer().polarity_scores(words)
+
+    if debug:
+        print(sentiment)
+
+    positivity = sentiment['neg']
+    negativity = sentiment['pos']
+
+    if negativity > positivity:
+        print("Comments overall negative: \nNegative score of " + str(sentiment['neg']) +
+              " vs. Positive score of " + str(sentiment['pos']))
+    elif positivity > negativity:
+        print("Comments overall positive:\nPositive score of " + str(sentiment['pos']) +
+              " vs. Negative score of " + str(sentiment['neg']))
+    else:
+        print("Comments are mostly neutral")
 
     # Prepare the data for the model
 
 
 if __name__ == '__main__':
-    # Empty the output file to ensure data cleanliness
-    open('CommentBodies', 'w').close()
-    reader = CommentReader()
-    bot = login()
-    extract(bot)
-    analyse()
+    subreddit = input("Please enter the subreddit you would like to analyze: (0 to exit)")
+    if subreddit == 0:
+        sys.exit()
+    else:
+        open('CommentBodies', 'w').close()
+        reader = CommentReader()
+        bot = login()
+        extract(bot)
+        analyse()
