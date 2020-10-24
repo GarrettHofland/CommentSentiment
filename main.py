@@ -1,5 +1,3 @@
-import sys
-
 import praw
 import json
 import nltk
@@ -115,25 +113,35 @@ def analyse():
     positivity = sentiment['neg']
     negativity = sentiment['pos']
 
+    sentiment_dict = {}
+
     if negativity > positivity:
         print("Comments overall negative: \nNegative score of " + str(sentiment['neg']) +
               " vs. Positive score of " + str(sentiment['pos']))
+        sentiment_dict = {"Sentiment":"Negative",
+                          "Score":str(sentiment['neg'])}
     elif positivity > negativity:
         print("Comments overall positive:\nPositive score of " + str(sentiment['pos']) +
               " vs. Negative score of " + str(sentiment['neg']))
+        sentiment_dict = {"Sentiment": "Positive",
+                          "Score": str(sentiment['pos'])}
     else:
         print("Comments are mostly neutral")
+        sentiment_dict = {"Sentiment": "Neutral",
+                          "Score": str(sentiment['neu'])}
 
-    # Prepare the data for the model
+    # Append data to the JSON file data
+    with open('SentimentData', 'a') as output:
+        json.dump(sentiment_dict, output, ensure_ascii=True, indent=2)
 
 
 if __name__ == '__main__':
     subreddit = input("Please enter the subreddit you would like to analyze: (0 to exit)")
-    if subreddit == 0:
-        sys.exit()
-    else:
-        open('CommentBodies', 'w').close()
-        reader = CommentReader()
-        bot = login()
-        extract(bot)
-        analyse()
+
+    open('CommentBodies', 'w').close()
+    reader = CommentReader()
+    bot = login()
+    extract(bot)
+    analyse()
+
+    print("\nBye!")
