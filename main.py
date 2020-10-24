@@ -118,16 +118,19 @@ def analyse():
     if negativity > positivity:
         print("Comments overall negative: \nNegative score of " + str(sentiment['neg']) +
               " vs. Positive score of " + str(sentiment['pos']))
-        sentiment_dict = {"Sentiment":"Negative",
-                          "Score":str(sentiment['neg'])}
+        sentiment_dict = {"Subreddit": subreddit,
+                          "Sentiment": "Negative",
+                          "Score": str(sentiment['neg'])}
     elif positivity > negativity:
         print("Comments overall positive:\nPositive score of " + str(sentiment['pos']) +
               " vs. Negative score of " + str(sentiment['neg']))
-        sentiment_dict = {"Sentiment": "Positive",
+        sentiment_dict = {"Subreddit": subreddit,
+                          "Sentiment": "Positive",
                           "Score": str(sentiment['pos'])}
     else:
         print("Comments are mostly neutral")
-        sentiment_dict = {"Sentiment": "Neutral",
+        sentiment_dict = {"Subreddit": subreddit,
+                          "Sentiment": "Neutral",
                           "Score": str(sentiment['neu'])}
 
     # Append data to the JSON file data
