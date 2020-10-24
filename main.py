@@ -20,7 +20,7 @@ subreddit = "politics"
 timeout = 60
 
 # Maximum number of comments pulled
-limit = 10
+limit = 100000
 
 # Debug mode
 debug = 0
@@ -131,7 +131,7 @@ def analyse():
                           "Score": str(sentiment['neu'])}
 
     # Append data to the JSON file data
-    with open('SentimentData', 'a') as output:
+    with open('SentimentData', 'w') as output:
         json.dump(sentiment_dict, output, ensure_ascii=True, indent=2)
 
 
