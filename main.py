@@ -39,29 +39,14 @@ class CommentReader:
         self.password = str(credentials['Password'])
         self.user_agent = str(credentials['User_Agent'])
 
-    def get_client_id(self):
-        return self.client_id
-
-    def get_client_secret(self):
-        return self.client_secret
-
-    def get_username(self):
-        return self.username
-
-    def get_password(self):
-        return self.password
-
-    def get_user_agent(self):
-        return self.user_agent
-
 
 def login():
     reddit = praw.Reddit(
-        client_id=reader.get_client_id(),
-        client_secret=reader.get_client_secret(),
-        username=reader.get_username(),
-        password=reader.get_password(),
-        user_agent=reader.get_user_agent()
+        client_id=reader.client_id,
+        client_secret=reader.client_secret,
+        username=reader.username,
+        password=reader.password,
+        user_agent=reader.user_agent
     )
     return reddit
 
