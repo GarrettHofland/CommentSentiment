@@ -14,7 +14,7 @@ with redirect_stdout(open(os.devnull, 'w')):
     nltk.download('vader_lexicon', quiet=True)
 
 # The subreddit where comments are pulled from
-subreddit = "politics"
+subreddit = "technology"
 
 # How often the subreddit will be re-read
 timeout = 60
